@@ -14,6 +14,6 @@ class History extends Model
      * @var array
      */
     protected $fillable = [
-        'company_id','name'
+        'user_id','name'
     ];
 }

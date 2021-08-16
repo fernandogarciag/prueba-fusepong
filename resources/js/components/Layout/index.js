@@ -34,8 +34,14 @@ const Container = ({ children, userName, auth, csrf, title }) => (
                                         <a
                                             className="nav-link"
                                             href="/logout"
-                                            onClick="event.preventDefault();
-                                                 document.getElementById('logout-form').submit();"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                document
+                                                    .getElementById(
+                                                        "logout-form"
+                                                    )
+                                                    .submit();
+                                            }}
                                         >
                                             Logout
                                         </a>

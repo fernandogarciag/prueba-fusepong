@@ -16,4 +16,7 @@ mix.css("resources/css/app.css", "public/css")
     .js("resources/js/app.js", "public/js")
     .js("resources/js/login.js", "public/js")
     .js("resources/js/register.js", "public/js")
+    .js("resources/js/history/index.js", "public/js/history")
+    .js("resources/js/history/show.js", "public/js/history")
+    .js("resources/js/history/create-edit.js", "public/js/history")
     .react();

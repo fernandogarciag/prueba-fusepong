@@ -6,7 +6,6 @@ function Root({ jsonData }) {
     const data = JSON.parse(jsonData);
     const { auth, title, csrf, old, errors } = data;
     const [remember, setRemember] = useState(old.remember ? true : false);
-    console.log(data);
     return (
         <Layout auth={auth} csrf={csrf} title={title}>
             <form method="POST" action="login">

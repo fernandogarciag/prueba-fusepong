@@ -14,7 +14,7 @@ class LoginController extends Controller
   public function index()
   {
     if (Auth::check()) {
-      dd("Primero");
+      return redirect()->route('histories.index');
     } else {
       return redirect()->route('login');
     }

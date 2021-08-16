@@ -24,9 +24,9 @@ Route::middleware(['guest'])->group(function () {
   Route::post('login', [AuthLoginController::class, 'login']);
   Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
   Route::post('register', [RegisterController::class, 'register']);
-  
 });
 Route::middleware(['auth'])->group(function () {
   Route::post('logout', [AuthLoginController::class, 'logout'])->name('logout');
-  Route::get('histories', [HistoryController::class, 'index'])->name('home');
+  Route::resource('histories', HistoryController::class);
+  Route::get('home', [HomeController::class, 'index']);
 });

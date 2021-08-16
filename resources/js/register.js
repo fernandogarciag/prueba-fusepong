@@ -5,7 +5,6 @@ import Layout from "./components/Layout";
 const Root = ({ jsonData }) => {
     const data = JSON.parse(jsonData);
     const { auth, title, csrf, companies, old, errors } = data;
-    console.log(data);
     return (
         <Layout auth={auth} csrf={csrf} title={title}>
             <form method="POST" action="/register">
@@ -87,13 +86,11 @@ const Root = ({ jsonData }) => {
                         >
                             <option>Escoge tu compañia</option>
 
-                            {companies.map((company, index) => {
-                                return (
-                                    <option key={index} value={company.id}>
-                                        {company.name}
-                                    </option>
-                                );
-                            })}
+                            {companies.map((company, index) => (
+                                <option key={index} value={company.id}>
+                                    {company.name}
+                                </option>
+                            ))}
                         </select>
                         {errors.company.length !== 0 ? (
                             <span className="invalid-feedback" role="alert">
