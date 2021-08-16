@@ -17,7 +17,7 @@ class TicketController extends Controller
      */
     public function index(Project $project, History $history)
     {
-      $tickets = Ticket::where('history_id', $history->id)->get()->toArray();
+      $tickets = $history->tickets->toArray();
       $data = array(
         'title' => "Ticketes - " . $project->name . " - " . $history->name,
         'errors' => array(),
@@ -44,10 +44,10 @@ class TicketController extends Controller
         'errors' => array(),
         'project' => $project->toArray(),
         'history' => $history->toArray(),
-        'ticket' => array('name' => ""),
+        'ticket' => array('name' => "", 'state' => ""),
       );
       return view('react', [
-        'errors_name' => array('name'),
+        'errors_name' => array('name', 'state'),
         'nameJS' => "ticket/create-edit",
         'data' => $data
       ]);
@@ -61,14 +61,13 @@ class TicketController extends Controller
      */
     public function store(Request $request, Project $project, History $history)
     {
-      Validator::make($request->all(), array(
-        'name' => ['required', 'string', 'max:255']
-      ));
-      History::create([
-        'history_id' => $history->name,
+      $this->validator($request->all())->validate();
+      Ticket::create([
+        'history_id' => $history->id,
         'name' => $request->input('name'),
+        'state' => $request->input('state')
       ]);
-      return redirect()->route('histories.index');
+      return redirect()->route('tickets.index', ['project' => $project->id, 'history' => $history->id]);
     }
 
     /**
@@ -77,20 +76,20 @@ class TicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Project $project, History $history, Ticket $ticket)
     {
-      $history = History::select('histories.id', 'histories.name as historyName', 'users.name as userName', 'users.email as userEmail')
-      ->join("users", 'histories.user_id', "users.id")
-      ->where('histories.id', $id)
-      ->firstOrFail()->toArray();
+      $deleteHistory = count($history->tickets->toArray()) === 1;
       $data = array(
-        'title' => $history["historyName"] . " - Historia - Información",
+        'title' => $ticket["name"] . " - Tiquete - Información - " . $project->name . " - " . $history->name,
         'errors' => array(),
-        'history' => $history,
+        'project' => $project->toArray(),
+        'history' => $history->toArray(),
+        'ticket' => $ticket->toArray(),
+        'deleteHistory' => $deleteHistory
       );
       return view('react', [
         'errors_name' => array(),
-        'nameJS' => "history/show",
+        'nameJS' => "ticket/show",
         'data' => $data
       ]);
     }
@@ -101,16 +100,18 @@ class TicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(History $history)
+    public function edit(Project $project, History $history, Ticket $ticket)
     {
       $data = array(
-        'title' => $history->name . " - Historia - Editar",
+        'title' => $ticket["name"] . " - Tiquete - Editar - " . $project->name . " - " . $history->name,
         'errors' => array(),
+        'project' => $project->toArray(),
         'history' => $history->toArray(),
+        'ticket' => $ticket->toArray(),
       );
       return view('react', [
-        'errors_name' => array('name'),
-        'nameJS' => "history/create-edit",
+        'errors_name' => array('name', 'state'),
+        'nameJS' => "ticket/create-edit",
         'data' => $data
       ]);
     }
@@ -122,11 +123,13 @@ class TicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, History $history)
+    public function update(Request $request, Project $project, History $history, Ticket $ticket)
     {
-      $history->name = $request->input('name');
-      $history->save();
-      return redirect()->route('histories.index');
+      $this->validator($request->all())->validate();
+      $ticket->name = $request->input('name');
+      $ticket->state = $request->input('state');
+      $ticket->save();
+      return redirect()->route('tickets.index', ['project' => $project->id, 'history' => $history->id]);
     }
 
     /**
@@ -135,9 +138,29 @@ class TicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(History $history)
+    public function destroy(Project $project, History $history, Ticket $ticket)
     {
-      $history->delete();
-      return redirect()->route('histories.index');
+      $deleteHistory = count($history->tickets->toArray()) === 1;
+      if ($deleteHistory) {
+        $history->delete();
+        return redirect()->route('histories.index', ['project' => $project->id]);
+      } else {
+        $ticket->delete();
+        return redirect()->route('tickets.index', ['project' => $project->id, 'history' => $history->id]);
+      }
+    }
+
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+      return Validator::make($data, [
+        'name' => ['required', 'string', 'max:255'],
+        'state' => ['required', 'integer'],
+      ]);
     }
 }

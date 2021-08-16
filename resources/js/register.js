@@ -76,7 +76,6 @@ const Root = ({ jsonData }) => {
                     <div className="col-md-6">
                         <select
                             id="company"
-                            type="company"
                             className={`form-control${
                                 errors.company.length !== 0 ? " is-invalid" : ""
                             }`}
@@ -85,7 +84,6 @@ const Root = ({ jsonData }) => {
                             required
                         >
                             <option>Escoge tu compañia</option>
-
                             {companies.map((company, index) => (
                                 <option key={index} value={company.id}>
                                     {company.name}

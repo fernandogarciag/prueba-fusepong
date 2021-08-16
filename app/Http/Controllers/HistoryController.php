@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\History;
 use App\Models\Project;
-use App\Models\User;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -63,13 +63,16 @@ class HistoryController extends Controller
      */
     public function store(Request $request, Project $project)
     {
-      Validator::make($request->all(), array(
-        'name' => ['required', 'string', 'max:255']
-      ));
-      History::create([
+      $this->validator($request->all())->validate();
+      $idHistory = History::create([
         'project_id' => $project->id,
         'user_id' => Auth::id(),
         'name' => $request->input('name'),
+      ])->id;
+      Ticket::create([
+        'history_id' => $idHistory,
+        'name' => "Primer tiquete de la historia " . $request->input('name'),
+        'state' => 1
       ]);
       return redirect()->route('histories.index', ['project' => $project->id]);
     }
@@ -129,6 +132,7 @@ class HistoryController extends Controller
      */
     public function update(Request $request, Project $project, History $history)
     {
+      $this->validator($request->all())->validate();
       $history->name = $request->input('name');
       $history->save();
       return redirect()->route('histories.index', ['project' => $project->id]);
@@ -144,5 +148,18 @@ class HistoryController extends Controller
     {
       $history->delete();
       return redirect()->route('histories.index', ['project' => $project->id]);
+    }
+
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+      return Validator::make($data, [
+        'name' => ['required', 'string', 'max:255']
+      ]);
     }
 }

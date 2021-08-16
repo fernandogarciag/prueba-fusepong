@@ -58,6 +58,37 @@ const Root = ({ jsonData }) => {
                         )}
                     </div>
                 </div>
+                <div className="form-group row mb-3">
+                    <label
+                        htmlFor="state"
+                        className="col-md-4 col-form-label text-md-right"
+                    >
+                        Estado
+                    </label>
+                    <div className="col-md-6">
+                        <select
+                            id="state"
+                            className={`form-control${
+                                errors.state.length !== 0 ? " is-invalid" : ""
+                            }`}
+                            name="state"
+                            defaultValue={old.state ? old.state : ticket.state}
+                            required
+                        >
+                            <option>Escoge el estado inicial</option>
+                            <option value="1">Activo</option>
+                            <option value="2">En Proceso</option>
+                            <option value="3">Finalizado</option>
+                        </select>
+                        {errors.state.length !== 0 ? (
+                            <span className="invalid-feedback" role="alert">
+                                <strong>{errors.state}</strong>
+                            </span>
+                        ) : (
+                            ""
+                        )}
+                    </div>
+                </div>
                 <div className="form-group row mb-0">
                     <div className="col-md-6 offset-md-4">
                         <button type="submit" className="btn btn-primary">

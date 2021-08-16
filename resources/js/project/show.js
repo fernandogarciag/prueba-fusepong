@@ -8,7 +8,7 @@ const Root = ({ jsonData }) => {
     console.log(data);
     return (
         <Layout auth={auth} csrf={csrf} title={title}>
-            <div className=" mb-2">
+            <div className="mb-2">
                 <a
                     href="/projects"
                     type="button"

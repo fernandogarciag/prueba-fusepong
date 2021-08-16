@@ -8,6 +8,17 @@ const Root = ({ jsonData }) => {
     const ticketsActive = tickets.filter((ticket) => ticket.state === 1);
     const ticketsProgress = tickets.filter((ticket) => ticket.state === 2);
     const ticketsFinished = tickets.filter((ticket) => ticket.state === 3);
+    const displayTickets = (ticket, index) => (
+        <li className="list-group-item d-flex align-items-center" key={index}>
+            <a
+                className="btn btn-info me-2"
+                href={`/projects/${project.id}/histories/${history.id}/tickets/${ticket.id}`}
+            >
+                Info
+            </a>
+            <span>{ticket.name}</span>
+        </li>
+    );
     return (
         <Layout auth={auth} csrf={csrf} title={title}>
             <div className="mb-2">
@@ -29,31 +40,19 @@ const Root = ({ jsonData }) => {
                 <li className="list-group-item bg-primary text-white">
                     Activo
                 </li>
-                {ticketsActive.map((ticket, index) => (
-                    <li className="list-group-item" key={index}>
-                        {ticket.name}
-                    </li>
-                ))}
+                {ticketsActive.map(displayTickets)}
             </ul>
             <ul className="list-group mb-4">
                 <li className="list-group-item bg-success text-white">
                     En Proceso
                 </li>
-                {ticketsProgress.map((ticket, index) => (
-                    <li className="list-group-item" key={index}>
-                        {ticket.name}
-                    </li>
-                ))}
+                {ticketsProgress.map(displayTickets)}
             </ul>
             <ul className="list-group">
                 <li className="list-group-item bg-secondary text-white">
                     Finalizado
                 </li>
-                {ticketsFinished.map((ticket, index) => (
-                    <li className="list-group-item" key={index}>
-                        {ticket.name}
-                    </li>
-                ))}
+                {ticketsFinished.map(displayTickets)}
             </ul>
         </Layout>
     );

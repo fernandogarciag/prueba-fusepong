@@ -4,20 +4,27 @@ import Layout from "../components/Layout";
 
 const Root = ({ jsonData }) => {
     const data = JSON.parse(jsonData);
-    const { auth, title, csrf, history } = data;
-    console.log(data);
+    const { auth, title, csrf, project, history, ticket, deleteHistory } = data;
+    const state = {
+        1: "Activo",
+        2: "En Proceso",
+        3: "finalizado",
+    };
+    const deleteMessage = deleteHistory
+        ? "\nSi lo borra, se borrara tambien la historia"
+        : "";
     return (
         <Layout auth={auth} csrf={csrf} title={title}>
-            <div className=" mb-2">
+            <div className="mb-2">
                 <a
-                    href="/histories"
+                    href={`/projects/${project.id}/histories/${history.id}/tickets`}
                     type="button"
                     className="btn btn-primary me-2"
                 >
                     Regresar
                 </a>
                 <a
-                    href={`/histories/${history.id}/edit`}
+                    href={`/projects/${project.id}/histories/${history.id}/tickets/${ticket.id}/edit`}
                     type="button"
                     className="btn btn-warning me-2"
                 >
@@ -29,7 +36,7 @@ const Root = ({ jsonData }) => {
                         e.preventDefault();
                         if (
                             confirm(
-                                "Esta seguro que desea borrar la historia con todos sus tiquetes"
+                                `Esta seguro que desea borrar este tiquete.${deleteMessage}`
                             )
                         ) {
                             document.getElementById("destroy-form").submit();
@@ -40,7 +47,7 @@ const Root = ({ jsonData }) => {
                 </a>
                 <form
                     id="destroy-form"
-                    action={`/histories/${history.id}`}
+                    action={`/projects/${project.id}/histories/${history.id}/tickets/${ticket.id}`}
                     method="post"
                     className="d-none"
                 >
@@ -50,13 +57,16 @@ const Root = ({ jsonData }) => {
             </div>
             <ul className="list-group">
                 <li className="list-group-item">
-                    Nombre de la historia: {history.historyName}
+                    Nombre del projecto: {project.name}
                 </li>
                 <li className="list-group-item">
-                    Creador de la historia: {history.userName}
+                    Nombre de la historia: {history.name}
                 </li>
                 <li className="list-group-item">
-                    Email del creador: {history.userEmail}
+                    Nombre del tiquete: {ticket.name}
+                </li>
+                <li className="list-group-item">
+                    Estado del tiquete: {state[ticket.state]}
                 </li>
             </ul>
         </Layout>

@@ -58,9 +58,7 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-      Validator::make($request->all(), array(
-        'name' => ['required', 'string', 'max:255']
-      ));
+      $this->validator($request->all())->validate();
       $myCompany = User::findOrFail(Auth::id())->company_id;
       Project::create([
         'company_id' => $myCompany,
@@ -118,6 +116,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
+      $this->validator($request->all())->validate();
       $project->name = $request->input('name');
       $project->save();
       return redirect()->route('projects.index');
@@ -133,5 +132,18 @@ class ProjectController extends Controller
     {
       $project->delete();
       return redirect()->route('projects.index');
+    }
+
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+      return Validator::make($data, [
+        'name' => ['required', 'string', 'max:255']
+      ]);
     }
 }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Project extends Model
+class Comment extends Model
 {
     use HasFactory;
     /**
@@ -14,22 +14,22 @@ class Project extends Model
      * @var array
      */
     protected $fillable = [
-        'company_id','name'
+        'ticket_id','user_id', 'content'
     ];
 
     /**
      * Get the post that owns the comment.
      */
-    public function company()
+    public function ticket()
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Ticket::class);
     }
 
     /**
-     * Get the comments for the blog post.
+     * Get the post that owns the comment.
      */
-    public function histories()
+    public function user()
     {
-        return $this->hasMany(History::class);
+        return $this->belongsTo(User::class);
     }
 }
