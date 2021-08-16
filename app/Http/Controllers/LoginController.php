@@ -14,7 +14,7 @@ class LoginController extends Controller
   public function index()
   {
     if (Auth::check()) {
-      return redirect()->route('histories.index');
+      return redirect()->route('projects.index');
     } else {
       return redirect()->route('login');
     }

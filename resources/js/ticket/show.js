@@ -29,7 +29,7 @@ const Root = ({ jsonData }) => {
                         e.preventDefault();
                         if (
                             confirm(
-                                "Esta seguro que desea borrar la historia con todas sus tareas"
+                                "Esta seguro que desea borrar la historia con todos sus tiquetes"
                             )
                         ) {
                             document.getElementById("destroy-form").submit();

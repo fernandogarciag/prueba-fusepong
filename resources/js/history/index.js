@@ -4,21 +4,32 @@ import Layout from "../components/Layout";
 
 const Root = ({ jsonData }) => {
     const data = JSON.parse(jsonData);
-    const { auth, title, csrf, histories } = data;
-    console.log(data);
+    const { auth, title, csrf, project, histories } = data;
+    console.log(typeof histories);
     return (
         <Layout auth={auth} csrf={csrf} title={title}>
+            <div className="mb-2">
+                <a
+                    href={`/projects`}
+                    type="button"
+                    className="btn btn-primary me-2"
+                >
+                    Regresar
+                </a>
+                <a
+                    className="btn btn-primary"
+                    href={`/projects/${project.id}/histories/create`}
+                >
+                    Nueva Historia
+                </a>
+            </div>
             <table className="table table-bordered">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Nombre:</th>
                         <th scope="col">Creado por:</th>
-                        <th scope="col">
-                            <a class="btn btn-primary" href="/histories/create">
-                                Nueva Historia
-                            </a>
-                        </th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,13 +41,13 @@ const Root = ({ jsonData }) => {
                             <td>
                                 <a
                                     className="btn btn-primary me-1"
-                                    href="/home"
+                                    href={`/projects/${project.id}/histories/${history.id}/tickets`}
                                 >
-                                    Tareas
+                                    Tiquetes
                                 </a>
                                 <a
                                     className="btn btn-info"
-                                    href={`/histories/${history.id}`}
+                                    href={`/projects/${project.id}/histories/${history.id}`}
                                 >
                                     Info
                                 </a>

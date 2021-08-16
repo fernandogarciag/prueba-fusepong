@@ -4,20 +4,20 @@ import Layout from "../components/Layout";
 
 const Root = ({ jsonData }) => {
     const data = JSON.parse(jsonData);
-    const { auth, title, csrf, project, history } = data;
+    const { auth, title, csrf, project } = data;
     console.log(data);
     return (
         <Layout auth={auth} csrf={csrf} title={title}>
             <div className=" mb-2">
                 <a
-                    href={`/projects/${project.id}/histories`}
+                    href="/projects"
                     type="button"
                     className="btn btn-primary me-2"
                 >
                     Regresar
                 </a>
                 <a
-                    href={`/projects/${project.id}/histories/${history.id}/edit`}
+                    href={`/projects/${project.id}/edit`}
                     type="button"
                     className="btn btn-warning me-2"
                 >
@@ -29,7 +29,7 @@ const Root = ({ jsonData }) => {
                         e.preventDefault();
                         if (
                             confirm(
-                                "Esta seguro que desea borrar la historia con todos sus tiquetes"
+                                "Esta seguro que desea borrar el projecto con todos sus historias y tiquetes"
                             )
                         ) {
                             document.getElementById("destroy-form").submit();
@@ -40,7 +40,7 @@ const Root = ({ jsonData }) => {
                 </a>
                 <form
                     id="destroy-form"
-                    action={`/projects/${project.id}/histories/${history.id}`}
+                    action={`/projects/${project.id}`}
                     method="post"
                     className="d-none"
                 >
@@ -51,15 +51,6 @@ const Root = ({ jsonData }) => {
             <ul className="list-group">
                 <li className="list-group-item">
                     Nombre del projecto: {project.name}
-                </li>
-                <li className="list-group-item">
-                    Nombre de la historia: {history.historyName}
-                </li>
-                <li className="list-group-item">
-                    Creador de la historia: {history.userName}
-                </li>
-                <li className="list-group-item">
-                    Email del creador: {history.userEmail}
                 </li>
             </ul>
         </Layout>

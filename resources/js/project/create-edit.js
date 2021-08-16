@@ -4,14 +4,11 @@ import Layout from "../components/Layout";
 
 const Root = ({ jsonData }) => {
     const data = JSON.parse(jsonData);
-    const { auth, title, csrf, errors, old, project, history } = data;
-    console.log(history.name ? true : false);
+    const { auth, title, csrf, errors, old, project } = data;
     return (
         <Layout auth={auth} csrf={csrf} title={title}>
             <a
-                href={`/projects/${project.id}/histories${
-                    history.name ? `/${history.id}` : ""
-                }`}
+                href={`/projects${project.name ? `/${project.id}` : ""}`}
                 type="button"
                 className="btn btn-primary mb-2"
             >
@@ -19,11 +16,9 @@ const Root = ({ jsonData }) => {
             </a>
             <form
                 method="POST"
-                action={`/projects/${project.id}/histories${
-                    history.name ? `/${history.id}` : ""
-                }`}
+                action={`/projects${project.name ? `/${project.id}` : ""}`}
             >
-                {history.name ? (
+                {project.name ? (
                     <input type="hidden" name="_method" value="PUT" />
                 ) : (
                     ""
@@ -43,7 +38,7 @@ const Root = ({ jsonData }) => {
                             className={`form-control${
                                 errors.name.length !== 0 ? " is-invalid" : ""
                             }`}
-                            defaultValue={old.name ? old.name : history.name}
+                            defaultValue={old.name ? old.name : project.name}
                             name="name"
                             autoComplete="name"
                             required
@@ -61,9 +56,9 @@ const Root = ({ jsonData }) => {
                 <div className="form-group row mb-0">
                     <div className="col-md-6 offset-md-4">
                         <button type="submit" className="btn btn-primary">
-                            {history.name
-                                ? "Editar Historia"
-                                : "Nueva Historia"}
+                            {project.name
+                                ? "Editar Projecto"
+                                : "Nuevo Projecto"}
                         </button>
                     </div>
                 </div>

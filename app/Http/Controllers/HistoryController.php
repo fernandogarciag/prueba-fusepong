@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\History;
+use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,16 +16,16 @@ class HistoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Project $project)
     {
-      $myCompany = User::findOrFail(Auth::id())->company_id;
       $histories = History::select('histories.id', 'histories.name as historyName', 'users.name as userName')
       ->join("users", 'histories.user_id', "users.id")
-      ->where('users.company_id', $myCompany)
+      ->where('project_id', $project->id)
       ->get()->toArray();
       $data = array(
-        'title' => "Historias",
+        'title' => "Historias - " . $project->name,
         'errors' => array(),
+        'project' => $project->toArray(),
         'histories' => $histories,
       );
       return view('react', [
@@ -39,11 +40,12 @@ class HistoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Project $project)
     {
       $data = array(
-        'title' => "Crear Nueva Historia",
+        'title' => "Crear Nueva Historia - " . $project->name,
         'errors' => array(),
+        'project' => $project->toArray(),
         'history' => array('name' => ""),
       );
       return view('react', [
@@ -59,16 +61,17 @@ class HistoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Project $project)
     {
       Validator::make($request->all(), array(
         'name' => ['required', 'string', 'max:255']
       ));
       History::create([
+        'project_id' => $project->id,
         'user_id' => Auth::id(),
         'name' => $request->input('name'),
       ]);
-      return redirect()->route('histories.index');
+      return redirect()->route('histories.index', ['project' => $project->id]);
     }
 
     /**
@@ -77,15 +80,16 @@ class HistoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Project $project, $id)
     {
       $history = History::select('histories.id', 'histories.name as historyName', 'users.name as userName', 'users.email as userEmail')
       ->join("users", 'histories.user_id', "users.id")
       ->where('histories.id', $id)
       ->firstOrFail()->toArray();
       $data = array(
-        'title' => $history["historyName"] . " - Historia - Información",
+        'title' => $history["historyName"] . " - Historia - Información - " . $project->name,
         'errors' => array(),
+        'project' => $project->toArray(),
         'history' => $history,
       );
       return view('react', [
@@ -101,11 +105,12 @@ class HistoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(History $history)
+    public function edit(Project $project, History $history)
     {
       $data = array(
-        'title' => $history->name . " - Historia - Editar",
+        'title' => $history->name . " - Historia - Editar - " . $project->name,
         'errors' => array(),
+        'project' => $project->toArray(),
         'history' => $history->toArray(),
       );
       return view('react', [
@@ -122,11 +127,11 @@ class HistoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, History $history)
+    public function update(Request $request, Project $project, History $history)
     {
       $history->name = $request->input('name');
       $history->save();
-      return redirect()->route('histories.index');
+      return redirect()->route('histories.index', ['project' => $project->id]);
     }
 
     /**
@@ -135,9 +140,9 @@ class HistoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(History $history)
+    public function destroy(Project $project, History $history)
     {
       $history->delete();
-      return redirect()->route('histories.index');
+      return redirect()->route('histories.index', ['project' => $project->id]);
     }
 }

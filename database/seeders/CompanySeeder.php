@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Company;
 use App\Models\History;
+use App\Models\Project;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -15,141 +16,88 @@ class CompanySeeder extends Seeder
     array(
       'Apple',
       array(
-        array(
           'Iphone 13',
-          array(
-            array(
-              'Nueva pantalla',
-              'Descripción de Apple con Iphone 13 y Nueva pantalla',
-              '2'
-            ),
-            array(
-              'Nuevas aplicaciones',
-              'Descripción de Apple con Iphone 13 y Nuevas aplicaciones',
-              '2'
-            ),
-            array(
-              'Nueva cámara',
-              'Descripción de Apple con Iphone 13 y Nueva cámara',
-              '3'
-            ),
-            array(
-              'Nueva batería',
-              'Descripción de Apple con Iphone 13 y Nuevaa batería',
-              '3'
-            ),
-          ),
-        )
+          'Iphone SE 2',
       )
     ),
     array(
       'Samsung',
       array(
-        array(
           'Galaxy Node 21',
-          array(
-            array(
-              'Nueva pantalla',
-              'Descripción de Samsung con Galaxy Node 21 y Nueva pantalla',
-              '2'
-            ),
-            array(
-              'Nuevas aplicaciones',
-              'Descripción de Samsung con Galaxy Node 21 y Nuevas aplicaciones',
-              '2'
-            ),
-            array(
-              'Nueva cámara',
-              'Descripción de Samsung con Galaxy Node 21 y Nueva cámara',
-              '3'
-            ),
-            array(
-              'Nuevaa batería',
-              'Descripción de Samsung con Galaxy Node 21 y Nuevaa batería',
-              '3'
-            ),
-          ),
-        ),
-        array(
-          'Galaxy Node 11',
-          array(
-            array(
-              'Nueva pantalla',
-              'Descripción de Samsung con Galaxy Node 11 y Nueva pantalla',
-              '2'
-            ),
-            array(
-              'Nuevas aplicaciones',
-              'Descripción de Samsung con Galaxy Node 11 y Nuevas aplicaciones',
-              '2'
-            ),
-            array(
-              'Nueva cámara',
-              'Descripción de Samsung con Galaxy Node 21 y Nueva cámara',
-              '3'
-            ),
-            array(
-              'Nuevaa batería',
-              'Descripción de Samsung con Galaxy Node 21 y Nuevaa batería',
-              '3'
-            ),
-          ),
-        )
+          'Galaxy Z Flip 4',
       )
     ),
     array(
       'Xiaomi',
       array(
-        array(
           'Mi 12',
-          array(
-            array(
-              'Nueva pantalla',
-              'Descripción de Xiaomi con Mi 12 y Nueva pantalla',
-              '2'
-            ),
-            array(
-              'Nuevas aplicaciones',
-              'Descripción de Xiaomi con Mi 12 y Nuevas aplicaciones',
-              '2'
-            ),
-            array(
-              'Nueva cámara',
-              'Descripción de Samsung con Galaxy Node 21 y Nueva cámara',
-              '3'
-            ),
-            array(
-              'Nuevaa batería',
-              'Descripción de Samsung con Galaxy Node 21 y Nuevaa batería',
-              '3'
-            ),
-          ),
+          'Redmi Note 11',
+        )
+      )
+  );
+
+  private $histories_array = array(
+    array(
+      'Mejorar la pantalla',
+      array(
+        array(
+          'Mejorando reconocimiendo dactilar',
+          '2'
         ),
         array(
-          'Redmi Note 11',
-          array(
-            array(
-              'Nueva pantalla',
-              'Descripción de Xiaomi con Redmi Note 11 y Nueva pantalla',
-              '2'
-            ),
-            array(
-              'Nuevas aplicaciones',
-              'Descripción de Xiaomi con Redmi Note 11 y Nuevas aplicaciones',
-              '2'
-            ),
-            array(
-              'Nueva cámara',
-              'Descripción de Samsung con Galaxy Node 21 y Nueva cámara',
-              '3'
-            ),
-            array(
-              'Nuevaa batería',
-              'Descripción de Samsung con Galaxy Node 21 y Nuevaa batería',
-              '3'
-            ),
-          ),
-        )
+          'Mejorando dureza',
+          '2'
+        ),
+        array(
+          'Buscando mejores materiales',
+          '3'
+        ),
+        array(
+          'Mejorando sistema tactil',
+          '3'
+        ),
+      )
+    ),
+    array(
+      'Mejorar la camara',
+      array(
+        array(
+          'Mejorando detección de gestos',
+          '2'
+        ),
+        array(
+          'Mejorando campo de visión',
+          '2'
+        ),
+        array(
+          'Mejorando dureza',
+          '3'
+        ),
+        array(
+          'Buscando mejores materiales',
+          '3'
+        ),
+      )
+    ),
+    array(
+      'Mejorar la bateria',
+      array(
+        array(
+          'Mejorando ciclos',
+          '2'
+        ),
+        array(
+          'Mejorando duración',
+          '2'
+        ),
+        array(
+          'Buscando mejores materiales',
+          '3'
+        ),
+        array(
+          'Mejorando temperatura máxima',
+          '3'
+        ),
       )
     )
   );
@@ -175,18 +123,24 @@ class CompanySeeder extends Seeder
         'password' => Hash::make('123456789'),
         'company_id' => $idCompany
       ])->id;
-      foreach ($company[1] as $history) {
-        $idHistory = History::create([
-          'user_id' => $userId,
-          'name' => $history[0],
+      foreach ($company[1] as $project) {
+        $idProject = Project::create([
+          'company_id' => $idCompany,
+          'name' => $project,
         ])->id;
-        foreach ($history[1] as $task) {
-          Ticket::create([
-            'history_id' => $idHistory,
-            'name' => $task[0],
-            'description' => $task[1],
-            'state_id' => $task[2],
-          ]);
+        foreach ($this->histories_array as $history) {
+          $idHistory = History::create([
+            'project_id' => $idProject,
+            'user_id' => $userId,
+            'name' => $history[0],
+          ])->id;
+          foreach ($history[1] as $task) {
+            Ticket::create([
+              'history_id' => $idHistory,
+              'name' => $task[0],
+              'state' => $task[1],
+            ]);
+          }
         }
       }
     }

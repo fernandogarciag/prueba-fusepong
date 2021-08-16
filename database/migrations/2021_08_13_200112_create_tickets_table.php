@@ -17,8 +17,7 @@ class CreateTicketsTable extends Migration
             $table->id();
             $table->foreignId('history_id')->constrained('histories');
             $table->string('name');
-            $table->text('description');
-            $table->foreignId('state_id')->constrained('states');
+            $table->unsignedTinyInteger('state');
             $table->timestamps();
         });
     }

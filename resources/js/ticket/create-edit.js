@@ -4,12 +4,14 @@ import Layout from "../components/Layout";
 
 const Root = ({ jsonData }) => {
     const data = JSON.parse(jsonData);
-    const { auth, title, csrf, errors, old, history } = data;
-    console.log(history.name ? true : false);
+    const { auth, title, csrf, errors, old, project, history, ticket } = data;
+    console.log(ticket.name ? true : false);
     return (
         <Layout auth={auth} csrf={csrf} title={title}>
             <a
-                href={`/histories${history.name ? `/${history.id}` : ""}`}
+                href={`/projects/${project.id}/histories/${history.id}/tickets${
+                    ticket.name ? `/${ticket.id}` : ""
+                }`}
                 type="button"
                 className="btn btn-primary mb-2"
             >
@@ -17,9 +19,11 @@ const Root = ({ jsonData }) => {
             </a>
             <form
                 method="POST"
-                action={`/histories${history.name ? `/${history.id}` : ""}`}
+                action={`/projects/${project.id}/histories/${
+                    history.id
+                }/tickets${ticket.name ? `/${ticket.id}` : ""}`}
             >
-                {history.name ? (
+                {ticket.name ? (
                     <input type="hidden" name="_method" value="PUT" />
                 ) : (
                     ""
@@ -39,7 +43,7 @@ const Root = ({ jsonData }) => {
                             className={`form-control${
                                 errors.name.length !== 0 ? " is-invalid" : ""
                             }`}
-                            defaultValue={old.name ? old.name : history.name}
+                            defaultValue={old.name ? old.name : ticket.name}
                             name="name"
                             autoComplete="name"
                             required
@@ -57,7 +61,7 @@ const Root = ({ jsonData }) => {
                 <div className="form-group row mb-0">
                     <div className="col-md-6 offset-md-4">
                         <button type="submit" className="btn btn-primary">
-                            Editar Historia
+                            {ticket.name ? "Editar Tiquete" : "Nuevo Tiquete"}
                         </button>
                     </div>
                 </div>

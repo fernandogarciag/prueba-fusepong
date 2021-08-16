@@ -11,7 +11,7 @@
   <head>
     <meta charset="utf-8" />
     <link
-      href="https://super-likers.s3.amazonaws.com/unidrogas/campaign/small_qr.png"
+      href="https://es.reactjs.org/favicon-32x32.png?v=f4d46f030265b4c48a05c999b8d93791"
       rel="shortcut icon"
       type="image/x-icon"
     />
