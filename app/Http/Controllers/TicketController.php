@@ -72,7 +72,7 @@ class TicketController extends Controller
       Comment::create([
         'ticket_id' => $idTicket,
         'user_id' => Auth::id(),
-        'content' => 'Cree este tickete'
+        'content' => 'Creé este tickete'
       ]);
       return redirect()->route('tickets.index', ['project' => $project->id, 'history' => $history->id]);
     }
@@ -88,6 +88,7 @@ class TicketController extends Controller
       $deleteHistory = count($history->tickets->toArray()) === 1;
       $comments = Comment::select('comments.id', 'comments.content', 'users.name', 'comments.updated_at')
       ->join("users", 'comments.user_id', "users.id")
+      ->orderByDesc('comments.id')
       ->where('ticket_id', $ticket->id)
       ->get()->toArray();
       $data = array(
@@ -160,7 +161,7 @@ class TicketController extends Controller
         $ticket->state = $request->input('state');
       }
       $ticket->save();
-      return redirect()->route('tickets.index', ['project' => $project->id, 'history' => $history->id]);
+      return redirect()->route('tickets.show', ['project' => $project->id, 'history' => $history->id, 'ticket'=> $ticket->id]);
     }
 
     /**
@@ -192,6 +193,8 @@ class TicketController extends Controller
       return Validator::make($data, [
         'name' => ['required', 'string', 'max:255'],
         'state' => ['required', 'integer'],
-      ]);
+      ], array(
+        'state.integer' => 'Es necesario escoger un estado.',
+      ));
     }
 }

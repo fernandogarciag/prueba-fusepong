@@ -102,7 +102,7 @@ class ProjectController extends Controller
       );
       return view('react', [
         'errors_name' => array('name'),
-        'nameJS' => "project  /create-edit",
+        'nameJS' => "project/create-edit",
         'data' => $data
       ]);
     }
