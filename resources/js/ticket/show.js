@@ -154,7 +154,8 @@ const Root = ({ jsonData }) => {
                             <input type="hidden" name="_token" value={csrf} />
                         </form>
                         <span>
-                            {comment.name}: {comment.content}
+                            {comment.name} {comment.updated_at}:{" "}
+                            {comment.content}
                         </span>
                     </li>
                 ))}

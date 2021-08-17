@@ -5,7 +5,6 @@ import Layout from "../components/Layout";
 const Root = ({ jsonData }) => {
     const data = JSON.parse(jsonData);
     const { auth, title, csrf, errors, old, project, history } = data;
-    console.log(history.name ? true : false);
     return (
         <Layout auth={auth} csrf={csrf} title={title}>
             <a

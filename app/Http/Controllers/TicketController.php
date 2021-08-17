@@ -7,6 +7,7 @@ use App\Models\History;
 use App\Models\Project;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class TicketController extends Controller
@@ -63,10 +64,15 @@ class TicketController extends Controller
     public function store(Request $request, Project $project, History $history)
     {
       $this->validator($request->all())->validate();
-      Ticket::create([
+      $idTicket = Ticket::create([
         'history_id' => $history->id,
         'name' => $request->input('name'),
         'state' => $request->input('state')
+      ])->id;
+      Comment::create([
+        'ticket_id' => $idTicket,
+        'user_id' => Auth::id(),
+        'content' => 'Cree este tickete'
       ]);
       return redirect()->route('tickets.index', ['project' => $project->id, 'history' => $history->id]);
     }
@@ -80,7 +86,7 @@ class TicketController extends Controller
     public function show(Project $project, History $history, Ticket $ticket)
     {
       $deleteHistory = count($history->tickets->toArray()) === 1;
-      $comments = Comment::select('comments.id', 'comments.content', 'users.name')
+      $comments = Comment::select('comments.id', 'comments.content', 'users.name', 'comments.updated_at')
       ->join("users", 'comments.user_id', "users.id")
       ->where('ticket_id', $ticket->id)
       ->get()->toArray();
@@ -132,8 +138,27 @@ class TicketController extends Controller
     public function update(Request $request, Project $project, History $history, Ticket $ticket)
     {
       $this->validator($request->all())->validate();
-      $ticket->name = $request->input('name');
-      $ticket->state = $request->input('state');
+      if ($ticket->name != $request->input('name')) {
+        Comment::create([
+          'ticket_id' => $ticket->id,
+          'user_id' => Auth::id(),
+          'content' => 'Cambie el nombre del tiquete de ' . $ticket->name . ' a ' . $request->input('name')
+        ]);
+        $ticket->name = $request->input('name');
+      }
+      if ($ticket->state != $request->input('state')) {
+        $stateName = array(
+          1 => 'Activo',
+          2 => 'En Proceso',
+          3 => 'Terminado'
+        );
+        Comment::create([
+          'ticket_id' => $ticket->id,
+          'user_id' => Auth::id(),
+          'content' => 'Cambie el Estado del tiquete de ' . $stateName[$ticket->state] . ' a ' . $stateName[$request->input('state')]
+        ]);
+        $ticket->state = $request->input('state');
+      }
       $ticket->save();
       return redirect()->route('tickets.index', ['project' => $project->id, 'history' => $history->id]);
     }
