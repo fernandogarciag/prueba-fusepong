@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\History;
 use App\Models\Project;
 use App\Models\Ticket;
@@ -79,16 +80,21 @@ class TicketController extends Controller
     public function show(Project $project, History $history, Ticket $ticket)
     {
       $deleteHistory = count($history->tickets->toArray()) === 1;
+      $comments = Comment::select('comments.id', 'comments.content', 'users.name')
+      ->join("users", 'comments.user_id', "users.id")
+      ->where('ticket_id', $ticket->id)
+      ->get()->toArray();
       $data = array(
         'title' => $ticket["name"] . " - Tiquete - Información - " . $project->name . " - " . $history->name,
         'errors' => array(),
         'project' => $project->toArray(),
         'history' => $history->toArray(),
         'ticket' => $ticket->toArray(),
-        'deleteHistory' => $deleteHistory
+        'deleteHistory' => $deleteHistory,
+        'comments' => $comments
       );
       return view('react', [
-        'errors_name' => array(),
+        'errors_name' => array('content'),
         'nameJS' => "ticket/show",
         'data' => $data
       ]);

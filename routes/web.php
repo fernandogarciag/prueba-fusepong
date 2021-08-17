@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
@@ -32,5 +33,7 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('projects', ProjectController::class);
   Route::resource('projects/{project}/histories', HistoryController::class);
   Route::resource('projects/{project}/histories/{history}/tickets', TicketController::class);
+  Route::post('projects/{project}/histories/{history}/tickets/{ticket}/comments', [CommentController::class, 'store']);
+  Route::delete('projects/{project}/histories/{history}/tickets/{ticket}/comments/{comment}', [CommentController::class, 'destroy']);
   Route::get('home', [HomeController::class, 'index']);
 });

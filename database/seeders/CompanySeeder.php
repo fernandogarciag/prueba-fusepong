@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Comment;
 use App\Models\Company;
 use App\Models\History;
 use App\Models\Project;
@@ -135,11 +136,18 @@ class CompanySeeder extends Seeder
             'name' => $history[0],
           ])->id;
           foreach ($history[1] as $task) {
-            Ticket::create([
+            $idTicket = Ticket::create([
               'history_id' => $idHistory,
               'name' => $task[0],
               'state' => $task[1],
-            ]);
+            ])->id;
+            for ($i = 1; $i <= 3; $i++) { 
+              Comment::create([
+                'ticket_id' => $idTicket,
+                'user_id' => $userId,
+                'content' => "Comentario número " . $i,
+              ]);
+            }
           }
         }
       }

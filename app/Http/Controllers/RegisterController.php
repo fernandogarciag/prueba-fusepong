@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
+  use RedirectsUsers;
+
   public function showRegistrationForm()
   {
     $companies = Company::select('id', 'name')->get()->toArray();
@@ -73,5 +76,18 @@ class RegisterController extends Controller
   protected function registered(Request $request, $user)
   {
       //
+  }
+  /**
+   * Get the post register / login redirect path.
+   *
+   * @return string
+   */
+  public function redirectPath()
+  {
+      if (method_exists($this, 'redirectTo')) {
+          return $this->redirectTo();
+      }
+
+      return property_exists($this, 'redirectTo') ? $this->redirectTo : '/';
   }
 }
